@@ -22,6 +22,7 @@ const TopbarInsideTabs = ({location, pathnames, currentPage ,totalPages, setCurr
                     <li><a href="">Folder Settings</a></li>
                 </ul>
                 </div>
+               
             </div>
 
             {/*buttons and paginations */}
@@ -35,13 +36,16 @@ const TopbarInsideTabs = ({location, pathnames, currentPage ,totalPages, setCurr
                         
                         
                         <li>
-                            <div className="dropdown ">
-                                    <div tabIndex={0} role="button" className="text-xs lg:text-sm lg:btn-sm ">More actions ▼</div>
-                                    <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-                                        <li><a>Item 1</a></li>
-                                        <li><a>Item 2</a></li>
-                                    </ul>
-                            </div>
+                        <div class="form-group">
+                        
+                        <select class="form-control" className='w-40 h-8 text-sm border rounded-md'>
+                          <option>--More Action--</option>
+                          <option>option 2</option>
+                          <option>option 3</option>
+                          <option>option 4</option>
+                          <option>option 5</option>
+                        </select>
+                      </div>
                         </li>
                     </ul>
                     <PaginationComponent currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} handleSort={handleSort} sortBy={sortBy} sortOrder={sortOrder} handleItemsPerPageChange={handleItemsPerPageChange } itemsPerPage={itemsPerPage}></PaginationComponent>

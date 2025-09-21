@@ -5,15 +5,22 @@ const PaginationComponent = ({ currentPage, totalPages, onPageChange, handleSort
 
   return (
     <div>
-      <ul className="flex flex-row gap-3">
+      
       <div>
-      <ul className="flex flex-row gap-3">
-      <div className="join">
+      
+     
+
+      
+    </div>
+
+        <div className="flex flex-row gap-2">
+
+        <div className="flex flex-row gap-1">
                 {/* Previous Button */}
                 <button
                     onClick={() => onPageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="join-item btn btn-lg"
+                    className="join-item btn btn-xs lg:btn-lg"
                 >
                     «
                 </button>
@@ -27,23 +34,18 @@ const PaginationComponent = ({ currentPage, totalPages, onPageChange, handleSort
                 <button
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className="join-item btn btn-lg"
+                    className="join-item btn btn-xs lg:btn-lg"
                 >
                     »
                 </button>
-                </div>
-
-      </ul>
-    </div>
-
-        <div className="flex flex-row gap-1">
+        </div>
           
-          <div className="dropdown">
+          <div className="">
             <ul
                 tabIndex={0}
-                className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+                className=" bg-base-100 rounded-box z-1 w-20 p-2 shadow-sm"
                 >
-                <li><button onClick={() => handleSort("name")}>Name {sortBy === "name" ? (sortOrder === "asc" ? "↑" : "↓") : ""}</button></li>
+                <li><button className='bg-gray-200' onClick={() => handleSort("name")}>Name {sortBy === "name" ? (sortOrder === "asc" ? "↑" : "↓") : ""}</button></li>
                 {/* Add more sort options here */}
             </ul>
           </div >
@@ -65,7 +67,7 @@ const PaginationComponent = ({ currentPage, totalPages, onPageChange, handleSort
                 </select>
               </div>
         </div>
-      </ul>
+     
 
       {/* Display the files/folders for the current page */}
       

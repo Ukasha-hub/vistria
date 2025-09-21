@@ -11,6 +11,13 @@ const TopbarInsideTabs = ({location, pathnames, currentPage ,totalPages, setCurr
     const navigate = useNavigate();    
   return (
     <div>
+       {/* Back Button */}
+       <button
+            onClick={() => navigate(-1)}
+            className="px-3 py-1 mb-2 text-sm font-medium bg-gray-200 hover:bg-gray-300 rounded-md"
+          >
+            ⬅ Back
+          </button>
         {/*breadcrump */}
         <div className='flex flex-col lg:flex-row lg:justify-between'>
 

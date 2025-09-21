@@ -25,7 +25,8 @@ const cardData = [
         description: "A short documentary showcasing wildlife in African safaris.",
         uploadDate: "2023-08-08"
       },
-      folderORfile: "file"
+      folderORfile: "file",
+      category:  "Dubbed serial"
     },
     {
       id: 2,
@@ -51,7 +52,8 @@ const cardData = [
         description: "A high-speed timelapse of urban life over 24 hours.",
         uploadDate: "2023-11-15"
       },
-      folderORfile: "file"
+      folderORfile: "file",
+      category:  "Dubbed serial"
     },
     {
       id: 3,
@@ -101,7 +103,8 @@ const cardData = [
             description: "An educational video about Mars missions and discoveries.",
             uploadDate: "2024-01-03"
           },
-        folderORfile: "file"
+        folderORfile: "file",
+        category:  "cartoon"
     },
     {
         id: 7,

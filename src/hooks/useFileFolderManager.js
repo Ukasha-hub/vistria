@@ -374,7 +374,8 @@ const [currentPageinFiles, setCurrentPageinFiles] = useState(1);
           setClipboard(null);
           localStorage.removeItem("clipboard");
           setContextMenu(prev => ({ ...prev, visible: false }));
-          window.location.reload();
+          {/*window.location.reload(); */}
+          
         };
 
         
@@ -482,7 +483,8 @@ const [currentPageinFiles, setCurrentPageinFiles] = useState(1);
           // Update local state
           
           setContextMenu(prev => ({ ...prev, visible: false }));
-          window.location.reload();
+          {/* */}
+           {/*window.location.reload(); */}
         };
 
         const createFolderInFolders = async (id) => {
@@ -515,7 +517,8 @@ const [currentPageinFiles, setCurrentPageinFiles] = useState(1);
           );
           setItems(updatedChildItems);
           setContextMenu(prev => ({ ...prev, visible: false }));
-          window.location.reload();
+          {/*window.location.reload(); */}
+          
         };
       
         

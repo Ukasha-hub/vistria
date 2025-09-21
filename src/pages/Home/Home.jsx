@@ -14,6 +14,9 @@ import RenameFolderModal from '../../components/Modal/RenameFolderModal'
 import { useState } from 'react'
 import TopbarInsideTabs from '../../components/TopbarInsideTabs'
 import Breadcrumb from '../../components/Breadcrumb';
+import Tabs from '../../components/Tabs';
+import PageHeader from '../../components/PageHeader';
+import AddFileModal from '../../components/Modal/AddFileModal';
 
 function Home() {
   const {createFolderInHomepage, handleDrop,handleRenameHomePage,itemToRename, setItemToRename, showRenameModal, setShowRenameModal, handleSelectAll, pasteClipboardItems, clipboard, setClipboard, itemsPerPage,handleItemsPerPageChange ,handleSort,sortBy, sortOrder,currentPage, setCurrentPage, totalPages,currentItems,  contextMenu, setContextMenu, showMoveModal, setShowMoveModal, showCopyModal, setShowCopyModal, 
@@ -26,55 +29,18 @@ function Home() {
 
     const [activeTab, setActiveTab] = useState("folder-content");
 
+    const [showAddFileModal, setShowAddFileModal] = useState(false);
+
   return (
     <div>
      {/* Page Header */}
-     <div className="content-header">
-        <div className="container-fluid">
-          <div className="row mb-2">
-            <div className="col-sm-6">
-             
-            </div>
-            <div className="col-sm-6">
-              <ol className="breadcrumb float-lg-right">
-              {/* <Breadcrumb className="breadcrumb-item text-2xl" location={location} pathnames={pathnames}></Breadcrumb> */}
-               
-                
-              </ol>
-            </div>
-          </div>
-        </div>
-      </div>
+     <PageHeader></PageHeader>
 
       {/* Main content */}
       <section className="content">
         <div className="container-fluid">
           {/* Tabs */}
-          <div className="nav navbar navbar-expand navbar-white navbar-light border-bottom p-0">
-            <ul className="navbar-nav overflow-hidden" role="tablist">
-              <li className={`nav-item ${activeTab === "folder-content" ? "active" : ""}`}>
-                <a className={`nav-link ${activeTab === "folder-content" ? "active" : ""}`}
-                   href="#"
-                   onClick={() => setActiveTab("folder-content")}>
-                  Folder Content
-                </a>
-              </li>
-              <li className={`nav-item ${activeTab === "videos" ? "active" : ""}`}>
-                <a className={`nav-link ${activeTab === "videos" ? "active" : ""}`}
-                   href="#"
-                   onClick={() => setActiveTab("videos")}>
-                  Videos
-                </a>
-              </li>
-              <li className={`nav-item ${activeTab === "category" ? "active" : ""}`}>
-                <a className={`nav-link ${activeTab === "category" ? "active" : ""}`}
-                   href="#"
-                   onClick={() => setActiveTab("category")}>
-                  Category
-                </a>
-              </li>
-            </ul>
-          </div>
+          <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
           {/* Tab Content */}
           <div className="tab-content">
@@ -93,7 +59,13 @@ function Home() {
                   handleItemsPerPageChange={handleItemsPerPageChange}
                   itemsPerPage={itemsPerPage}
                   handleSelectAll={handleSelectAll}
+                  showAddFileModal={showAddFileModal}
+                  onOpenAddFileModal={() => setShowAddFileModal(true)}
+                  onCloseAddFileModal={() => setShowAddFileModal(false)}
                 />
+                {showAddFileModal && (
+                  <AddFileModal onClose={() => setShowAddFileModal(false)} />
+                )}
 
                 {/* Folder grid + context menu */}
                 <div
@@ -112,15 +84,16 @@ function Home() {
                   }}
                 >
                   {currentItems.map((item) => (
-                    <FolderCard
-                      key={item.id}
-                      item={item}
-                      onRightClick={handleRightClick}
-                      onSelect={handleSelectItem}
-                      isSelected={selectedItems.some((i) => i.id === item.id)}
-                      onDrop={handleDrop}
-                    />
-                  ))}
+    <div key={item.id} className="border-b-2 border-dotted border-gray-100 pb-4">
+      <FolderCard
+        item={item}
+        onRightClick={handleRightClick}
+        onSelect={handleSelectItem}
+        isSelected={selectedItems.some((i) => i.id === item.id)}
+        onDrop={handleDrop}
+      />
+    </div>
+  ))}
 
                   {/* Context Menu */}
                   {contextMenu.visible && (

@@ -13,6 +13,9 @@ import PaginationComponent from '../components/PaginationComponent';
 import Breadcrumb from '../components/Breadcrumb';
 import RenameFolderModal from '../components/Modal/RenameFolderModal';
 import TopbarInsideTabs from '../components/TopbarInsideTabs';
+import Tabs from '../components/Tabs';
+import PageHeader from '../components/PageHeader';
+import AddFileModal from '../components/Modal/AddFileModal';
 
 
 const FolderItems = () => {
@@ -26,7 +29,7 @@ const FolderItems = () => {
   const { id } = useParams();
   const [folder, setFolder] = useState(null);
 
-  
+  const [showAddFileModal, setShowAddFileModal] = useState(false);
   
   
     
@@ -77,18 +80,7 @@ const FolderItems = () => {
   if (items.length === 0) return( 
     <>
                {/* Page Header */}
-     <div className="content-header">
-     <div className="container-fluid">
-       <div className="row mb-2">
-         <div className="col-sm-6">
-           
-         </div>
-         <div className="col-sm-6">
-           
-         </div>
-       </div>
-     </div>
-   </div>
+               <PageHeader></PageHeader>
 
 
    
@@ -111,7 +103,27 @@ const FolderItems = () => {
                          
                           <div className='tab-content bg-base-100 border-base-300 p-4'>
 
-                          <TopbarInsideTabs location={location} pathnames={pathnames} navigate={navigate} currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} handleSort={handleSort} sortBy={sortBy} sortOrder={sortOrder} handleItemsPerPageChange={handleItemsPerPageChange } itemsPerPage={itemsPerPage} handleSelectAll={handleSelectAll}></TopbarInsideTabs>
+                          <TopbarInsideTabs 
+                          location={location} 
+                          pathnames={pathnames} 
+                          navigate={navigate} 
+                          currentPage={currentPage} 
+                          totalPages={totalPages} 
+                          setCurrentPage={setCurrentPage} 
+                          handleSort={handleSort} 
+                          sortBy={sortBy} 
+                          sortOrder={sortOrder} 
+                          handleItemsPerPageChange={handleItemsPerPageChange } 
+                          itemsPerPage={itemsPerPage} 
+                          handleSelectAll={handleSelectAll} 
+                          onOpenAddFileModal={() => setShowAddFileModal(true)} 
+                          onCloseAddFileModal={() => setShowAddFileModal(false)}>
+
+                          
+                          </TopbarInsideTabs>
+                          {showAddFileModal && (
+                                <AddFileModal onClose={() => setShowAddFileModal(false)} />
+                            )}
 
               {/*buttons and paginations */}
               <div className='border-2 '>
@@ -169,63 +181,13 @@ const FolderItems = () => {
     <div>
 
                {/* Page Header */}
-     <div className="content-header">
-     <div className="container-fluid">
-       <div className="row mb-2">
-         <div className="col-sm-6">
-           
-         </div>
-        
-         <div className="col-sm-6">
-           <ol className="breadcrumb float-sm-right">
-            {/* <Breadcrumb className="breadcrumb-item text-2xl" location={location} pathnames={pathnames}></Breadcrumb>*/}
-           
-           </ol>
-         </div>
-       </div>
-     </div>
-   </div>
+               <PageHeader></PageHeader>
        
    <section className="content">
-       {/*tab */}
        <div className=' container-fluid '>
-            {/* name of each tab group should be unique */}
+           
             {/* Tabs Header (like Homepage) */}
-            <div className="nav navbar navbar-expand navbar-white navbar-light border-bottom p-0">
-              <ul className="navbar-nav overflow-hidden" role="tablist">
-                <li className={`nav-item ${activeTab === "folder-content" ? "active" : ""}`}>
-                  <a
-                    className={`nav-link ${activeTab === "folder-content" ? "active" : ""}`}
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setActiveTab("folder-content");
-                    }}
-                  >
-                    Folder Content
-                  </a>
-                </li>
-                <li className={`nav-item ${activeTab === "videos" ? "active" : ""}`}>
-                  <a
-                    className={`nav-link ${activeTab === "videos" ? "active" : ""}`}
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setActiveTab("videos");
-                    }}
-                  >
-                    Videos
-                  </a>
-                </li>
-                <li className={`nav-item ${activeTab === "category" ? "active" : ""}`}>
-                <a className={`nav-link ${activeTab === "category" ? "active" : ""}`}
-                   href="#"
-                   onClick={() => setActiveTab("category")}>
-                  Category
-                </a>
-              </li>
-              </ul>
-            </div>
+            <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
             {/* Tab Content */}
             <div className="tab-content">
@@ -245,7 +207,12 @@ const FolderItems = () => {
                     handleItemsPerPageChange={handleItemsPerPageChange}
                     itemsPerPage={itemsPerPage}
                     handleSelectAll={handleSelectAll}
+                    onOpenAddFileModal={() => setShowAddFileModal(true)}
+                   onCloseAddFileModal={() => setShowAddFileModal(false)}
                   />
+                  {showAddFileModal && (
+                  <AddFileModal onClose={() => setShowAddFileModal(false)} />
+                )}
                   <div
                     className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 p-10"
                     onContextMenu={(e) => {
@@ -262,8 +229,10 @@ const FolderItems = () => {
                     }}
                   >
                     {currentItemsinFiles.map(item => (
-                        <FolderCard key={item.id} item={item} onRightClick={handleRightClick} onSelect={handleSelectItem}
+                        <div key={item.id} className="border-b-2 border-dotted border-gray-300 pb-4">
+                        <FolderCard item={item} onRightClick={handleRightClick} onSelect={handleSelectItem}
                         isSelected={selectedItems.some(i => i.id === item.id)}  onDrop={handleDrop}/>
+                        </div>
                       ))}
                   </div>
                 </div>

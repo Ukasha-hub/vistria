@@ -7,7 +7,7 @@ const Rundown = lazy(() => import('../pages/Rundown'));
 const Settings = lazy(() => import('../pages/Settings'));
 const VideoMetadata = lazy(() => import('../pages/VideoMetadata')); 
 const FolderItems = lazy(() => import('../pages/FolderItems')); 
-const AddFilePage = lazy(() => import('../pages/AddFilePage')); 
+
 
 // ✅ Route configuration
 export const routes = [
@@ -47,12 +47,7 @@ export const routes = [
     name: 'FolderItems',
     exact: true,
   },
-  {
-    path: '/add-files',
-    element: AddFilePage,
-    name: 'AddFilePage',
-    exact: true,
-  },
+  
   // Add more routes here as your app grows
 ];
 
@@ -64,7 +59,7 @@ export const ROUTES = {
   SETTINGS: '/settings',
   METADATA: '/metadata/:id',
   FOLDERITEMS: '/folderitem/:id',
-  ADDFILEPAGE: '/add-files'
+  
 };
 
 export default routes;

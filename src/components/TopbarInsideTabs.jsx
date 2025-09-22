@@ -4,6 +4,8 @@ import Breadcrumb from './Breadcrumb';
 import PaginationComponent from './PaginationComponent';
 import { useNavigate } from "react-router-dom";
 import AddFileModal from './Modal/AddFileModal';
+import { FaArrowLeft } from "react-icons/fa";
+import { IoReturnUpBackOutline } from "react-icons/io5";
 
 const TopbarInsideTabs = ({location, pathnames, currentPage ,totalPages, setCurrentPage,handleSort, sortBy ,sortOrder, handleItemsPerPageChange ,itemsPerPage, handleSelectAll, onOpenAddFileModal, showAddFileModal, onCloseAddFileModal}) => {
     const {cards, setCards
@@ -38,9 +40,9 @@ const TopbarInsideTabs = ({location, pathnames, currentPage ,totalPages, setCurr
                            {/* Back Button */}
                           <button
                                 onClick={() => navigate(-1)}
-                                className="px-3 py-1 mb-2 text-sm font-medium bg-gray-200 hover:bg-gray-300 rounded-md"
+                                className="flex flex-row gap-1 px-3 py-1 mb-2 text-sm font-medium bg-gray-200 hover:bg-gray-300 rounded-md"
                               >
-                                ⬅ Back
+                                <IoReturnUpBackOutline /> <span>Back</span>
                               </button>
                   </li>
                         
@@ -52,12 +54,12 @@ const TopbarInsideTabs = ({location, pathnames, currentPage ,totalPages, setCurr
                             Add Files
                         </button>
                     </li>
-                    <li><button className='btn btn-xs' onClick={()=>{handleSelectAll(cards)}}>Select all</button></li>
+                    <li><button className='btn btn-xs bg-green-300 p-1' onClick={()=>{handleSelectAll(cards)}}>Select all</button></li>
                         
                     <li>
                         <div className="form-group">
                         
-                            <select className="form-control w-40 h-8 text-sm border rounded-md">
+                            <select className="form-control w-30 lg:w-40 h-8 text-sm border rounded-md">
                                 <option>--More Action--</option>
                                 <option>option 2</option>
                                 <option>option 3</option>

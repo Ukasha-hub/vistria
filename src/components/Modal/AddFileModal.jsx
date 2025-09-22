@@ -186,7 +186,7 @@ const handleFileChange = (event) => {
           </div>
 
           <div className="mt-10 flex justify-center">
-            <button className="btn btn-md" onClick={() => setFiles([])}>
+            <button className="btn btn-md bg-gray-400" onClick={() => setFiles([])}>
               Restart Uploading
             </button>
           </div>

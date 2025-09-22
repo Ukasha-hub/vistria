@@ -16,6 +16,7 @@ import TopbarInsideTabs from '../components/TopbarInsideTabs';
 import Tabs from '../components/Tabs';
 import PageHeader from '../components/PageHeader';
 import AddFileModal from '../components/Modal/AddFileModal';
+import ContextMenu from '../components/ContextMenu';
 
 
 const FolderItems = () => {
@@ -53,11 +54,6 @@ const FolderItems = () => {
       }
     };
 
-    
-
-
-
-   
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("cards")) || [];
@@ -80,11 +76,7 @@ const FolderItems = () => {
   if (items.length === 0) return( 
     <>
                {/* Page Header */}
-               <PageHeader></PageHeader>
-
-
-   
-  
+               <PageHeader></PageHeader> 
                 <div className="p-4" onContextMenu={(e) => {
                   e.preventDefault();
                   setContextMenu({
@@ -95,14 +87,11 @@ const FolderItems = () => {
                     item: null,
                   });
                 }}
-              > 
-                
+              >                
                 <div className=' h-20 '>
                           {/* name of each tab group should be unique */}
-                          <div className="tabs tabs-lift">
-                         
+                          <div className="tabs tabs-lift">  
                           <div className='tab-content bg-base-100 border-base-300 p-4'>
-
                           <TopbarInsideTabs 
                           location={location} 
                           pathnames={pathnames} 
@@ -119,7 +108,6 @@ const FolderItems = () => {
                           onOpenAddFileModal={() => setShowAddFileModal(true)} 
                           onCloseAddFileModal={() => setShowAddFileModal(false)}>
 
-                          
                           </TopbarInsideTabs>
                           {showAddFileModal && (
                                 <AddFileModal onClose={() => setShowAddFileModal(false)} />
@@ -130,42 +118,24 @@ const FolderItems = () => {
 
                 <div className='flex justify-center border-2 pb-50'><div className='pb-30'>Folder is empty</div></div>
                 {/* Context menu */}
-                {contextMenu.visible && (
-                                                  <ul
-                                                    className="fixed bg-white border  flex flex-col  rounded shadow-lg text-sm z-50"
-                                                    style={{ top: `${contextMenu.y}px`, left: `${contextMenu.x}px` }}
-                                                  >
-                                                    {contextMenu.type === 'blank' ? (
-                                                      <>
-                                                      <li
-                                                        className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                                        onClick={()=>{createFolderInFolders(id)}}
-                                                        
-                                                      >
-                                                        ➕ Create New Folder
-                                                        <hr className='text-gray-300'/>
-                                                      </li>
-                                                      {clipboard && clipboard.length > 0 && (
-                                                        <li
-                                                          className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                                          onClick={() => pasteClipboardItems(id)}
-                                                        >
-                                                          Paste
-                                                        </li>
-                                                      )}
-
-                                                      </>
-                                                    ) : (
-                                                      <></>
-                                                    )}
-                                                  </ul>
-                                                )}
-
-
+                <ContextMenu
+                  contextMenu={contextMenu}
+                  clipboard={clipboard}
+                  selectedItems={selectedItems}
+                  onCreateFolder={() => createFolderInFolders(id)}   // note: pass id here
+                  onPaste={() => pasteClipboardItems(id)}
+                  onOpenFileItems={handleOpenFileItems}
+                  onOpenMetadata={handleOpenMetadata}
+                  setItemToMove={setItemToMove}
+                  setShowMoveModal={setShowMoveModal}
+                  setItemToCopy={setItemToCopy}
+                  setClipboard={setClipboard}
+                  setContextMenu={setContextMenu}
+                  setItemToRename={setItemToRename}
+                  setShowRenameModal={setShowRenameModal}
+                  confirmDelete={confirmDelete}
+                />
               </div>
-
-
-
                             </div>
                            
                 
@@ -174,9 +144,7 @@ const FolderItems = () => {
               </div>
               </>
   )
-
  
-
   return (
     <div>
 
@@ -238,97 +206,23 @@ const FolderItems = () => {
                 </div>
               )}
                {/* Context menu */}
-               {contextMenu.visible && (
-                                    <ul
-                                      className="fixed bg-white border  flex flex-col  rounded shadow-lg text-sm z-50"
-                                      style={{ top: `${contextMenu.y}px`, left: `${contextMenu.x}px` }}
-                                    >
-                                      {contextMenu.type === 'blank' ? (
-                                        <>
-                                        <li
-                                          className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                          onClick={()=>{createFolderInFolders(id)}}
-                                          
-                                        >
-                                          ➕ Create New Folder
-                                        </li>
-                                        <hr className='text-gray-300'/>
-                                        {clipboard && clipboard.length > 0 && (
-                                            <li
-                                              className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                              onClick={() => pasteClipboardItems(id)}
-                                            >
-                                              Paste
-                                            </li>
-                                          )}
-
-                                        </>
-                                      ) : (
-                                        <>
-                                          {contextMenu.type === 'folder' && (
-                                            <li
-                                              className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                              onClick={handleOpenFileItems}
-                                            >
-                                              Open Folder
-                                              <hr className='text-gray-300'/>
-                                            </li>
-                                          )}
-                                          {contextMenu.type === 'file' && (
-                                            <li
-                                              className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                              onClick={handleOpenMetadata}
-                                            >
-                                              Open Meta
-                                              <hr className='text-gray-300'/>
-                                            </li>
-                                          )}
-                                          <li
-                                            className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                            onClick={() => {
-                                              const items = selectedItems.length ? selectedItems : [contextMenu.item];
-                                              setItemToMove(items);
-                                              setShowMoveModal(true);
-                                            }}
-                                          >
-                                            Move {contextMenu.type === 'folder' ? 'Folder' : 'File'}
-                                            <hr className='text-gray-300'/>
-                                          </li>
-                                         
-                                          <li
-                                            className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                            onClick={() => {
-                                              setItemToCopy(selectedItems.length ? selectedItems : [contextMenu.item]);
-                                              setClipboard(selectedItems.length ? selectedItems : [contextMenu.item]);
-                                              setContextMenu(prev => ({ ...prev, visible: false }));
-                                            }}
-                                          >
-                                            Copy
-                                            <hr className='text-gray-300'/>
-                                          </li>
-                                          <li
-                                            className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                            onClick={() => {
-                                              const item = selectedItems.length ? selectedItems[0] : contextMenu.item;
-                                              setItemToRename(item);
-                                              setShowRenameModal(true);
-                                              setContextMenu(prev => ({ ...prev, visible: false }));
-                                            }}
-                                          >
-                                            Rename
-                                            <hr className='text-gray-300'/>
-                                          </li>
-
-                                          <li
-                                            className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                            onClick={() => confirmDelete(selectedItems)}
-                                          >
-                                            Delete
-                                          </li>
-                                        </>
-                                      )}
-                                    </ul>
-                                  )}
+               <ContextMenu
+                contextMenu={contextMenu}
+                clipboard={clipboard}
+                selectedItems={selectedItems}
+                onCreateFolder={() => createFolderInFolders(id)}
+                onPaste={() => pasteClipboardItems(id)}
+                onOpenFileItems={handleOpenFileItems}
+                onOpenMetadata={handleOpenMetadata}
+                setItemToMove={setItemToMove}
+                setShowMoveModal={setShowMoveModal}
+                setItemToCopy={setItemToCopy}
+                setClipboard={setClipboard}
+                setContextMenu={setContextMenu}
+                setItemToRename={setItemToRename}
+                setShowRenameModal={setShowRenameModal}
+                confirmDelete={confirmDelete}
+              />
 
               {activeTab === "videos" && (
                 <div className="tab-pane fade show active p-4">
@@ -347,109 +241,23 @@ const FolderItems = () => {
                       />
                     ))}
                      {/* Context Menu */}
-                  {contextMenu.visible && (
-                    <ul
-                      className="fixed bg-white border p-1 flex flex-col rounded shadow-lg text-sm z-[9999]"
-                      style={{ top: `${contextMenu.y}px`, left: `${contextMenu.x}px` }}
-                    >
-                      {/* Context menu */}
-                      {contextMenu.visible && (
-                                    <ul
-                                      className="fixed bg-white border p-1 flex flex-col  rounded shadow-lg text-sm z-50"
-                                      style={{ top: `${contextMenu.y}px`, left: `${contextMenu.x}px` }}
-                                    >
-                                      {contextMenu.type === 'blank' ? (
-                                        <>
-                                        <li
-                                          className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                          onClick={createFolderInFolders(id)}
-                                          
-                                        >
-                                          ➕ Create New Folder
-                                        </li>
-                                        <hr className='text-gray-300'/>
-                                        {clipboard && clipboard.length > 0 && (
-                                        <li
-                                          className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                          onClick={() => pasteClipboardItems(null)}
-                                        >
-                                          Paste
-                                        </li>
-                                      
-                                      )}
-                                      
-
-                                        </>
-                                      ) : (
-                                        <>
-                                          {contextMenu.type === 'folder' && (
-                                            <li
-                                              className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                              onClick={handleOpenFileItems}
-                                            >
-                                              Open Folder
-                                              <hr className='text-gray-300'/>
-                                            </li>
-                                          )}
-                                          
-                                          {contextMenu.type === 'file' && (
-                                            <li
-                                              className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                              onClick={handleOpenMetadata}
-                                            >
-                                              Open Meta
-                                              <hr className='text-gray-300'/>
-                                            </li>
-                                          )}
-                                          
-                                          <li
-                                            className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                            onClick={() => {
-                                              const items = selectedItems.length ? selectedItems : [contextMenu.item];
-                                              setItemToMove(items);
-                                              setShowMoveModal(true);
-                                            }}
-                                          >
-                                            Move {contextMenu.type === 'folder' ? 'Folder' : 'File'}
-                                          </li>
-                                          <hr className='text-gray-300'/>
-                                         
-                                          <li
-                                            className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                            onClick={() => {
-                                              setItemToCopy(selectedItems.length ? selectedItems : [contextMenu.item]);
-                                              setClipboard(selectedItems.length ? selectedItems : [contextMenu.item]);
-                                              setContextMenu(prev => ({ ...prev, visible: false }));
-                                            }}
-                                          >
-                                            Copy
-                                          </li>
-                                          <hr className='text-gray-300'/>
-                                          <li
-                                              className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                              onClick={() => {
-                                                const item = selectedItems.length ? selectedItems[0] : contextMenu.item;
-                                                setItemToRename(item);
-                                                setShowRenameModal(true);
-                                                setContextMenu(prev => ({ ...prev, visible: false }));
-                                              }}
-                                            >
-                                              Rename
-                                            </li>
-                                            <hr className='text-gray-300'/>
-                                          <li
-                                            className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                            onClick={() => confirmDelete(selectedItems)}
-                                          >
-                                            Delete
-                                          </li>
-                                        </>
-                                      )}
-                                    </ul>
-                                  )}
-
-                    </ul>
-                  )}
+                     <ContextMenu
+                      contextMenu={contextMenu}
+                      clipboard={clipboard}
+                      selectedItems={selectedItems}
+                      onCreateFolder={() => createFolderInFolders(id)}
+                      onPaste={() => pasteClipboardItems(id)}
+                      onOpenFileItems={handleOpenFileItems}
+                      onOpenMetadata={handleOpenMetadata}
+                      setItemToMove={setItemToMove}
+                      setShowMoveModal={setShowMoveModal}
+                      setItemToCopy={setItemToCopy}
+                      setClipboard={setClipboard}
+                      setContextMenu={setContextMenu}
+                      setItemToRename={setItemToRename}
+                      setShowRenameModal={setShowRenameModal}
+                      confirmDelete={confirmDelete}
+                    />
                   </div>
                 </div>
               )}
@@ -507,109 +315,23 @@ const FolderItems = () => {
                     
                  </div>
                      {/* Context Menu */}
-                  {contextMenu.visible && (
-                    <ul
-                      className="fixed bg-white border p-1 flex flex-col rounded shadow-lg text-sm z-[9999]"
-                      style={{ top: `${contextMenu.y}px`, left: `${contextMenu.x}px` }}
-                    >
-                      {/* Context menu */}
-                      {contextMenu.visible && (
-                                    <ul
-                                      className="fixed bg-white border p-1 flex flex-col  rounded shadow-lg text-sm z-50"
-                                      style={{ top: `${contextMenu.y}px`, left: `${contextMenu.x}px` }}
-                                    >
-                                      {contextMenu.type === 'blank' ? (
-                                        <>
-                                        <li
-                                          className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                          onClick={createFolderInFolders(id)}
-                                          
-                                        >
-                                          ➕ Create New Folder
-                                        </li>
-                                        <hr className='text-gray-300'/>
-                                        {clipboard && clipboard.length > 0 && (
-                                        <li
-                                          className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                          onClick={() => pasteClipboardItems(null)}
-                                        >
-                                          Paste
-                                        </li>
-                                      
-                                      )}
-                                      
-
-                                        </>
-                                      ) : (
-                                        <>
-                                          {contextMenu.type === 'folder' && (
-                                            <li
-                                              className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                              onClick={handleOpenFileItems}
-                                            >
-                                              Open Folder
-                                              <hr className='text-gray-300'/>
-                                            </li>
-                                          )}
-                                          
-                                          {contextMenu.type === 'file' && (
-                                            <li
-                                              className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                              onClick={handleOpenMetadata}
-                                            >
-                                              Open Meta
-                                              <hr className='text-gray-300'/>
-                                            </li>
-                                          )}
-                                          
-                                          <li
-                                            className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                            onClick={() => {
-                                              const items = selectedItems.length ? selectedItems : [contextMenu.item];
-                                              setItemToMove(items);
-                                              setShowMoveModal(true);
-                                            }}
-                                          >
-                                            Move {contextMenu.type === 'folder' ? 'Folder' : 'File'}
-                                          </li>
-                                          <hr className='text-gray-300'/>
-                                         
-                                          <li
-                                            className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                            onClick={() => {
-                                              setItemToCopy(selectedItems.length ? selectedItems : [contextMenu.item]);
-                                              setClipboard(selectedItems.length ? selectedItems : [contextMenu.item]);
-                                              setContextMenu(prev => ({ ...prev, visible: false }));
-                                            }}
-                                          >
-                                            Copy
-                                          </li>
-                                          <hr className='text-gray-300'/>
-                                          <li
-                                              className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                              onClick={() => {
-                                                const item = selectedItems.length ? selectedItems[0] : contextMenu.item;
-                                                setItemToRename(item);
-                                                setShowRenameModal(true);
-                                                setContextMenu(prev => ({ ...prev, visible: false }));
-                                              }}
-                                            >
-                                              Rename
-                                            </li>
-                                            <hr className='text-gray-300'/>
-                                          <li
-                                            className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer"
-                                            onClick={() => confirmDelete(selectedItems)}
-                                          >
-                                            Delete
-                                          </li>
-                                        </>
-                                      )}
-                                    </ul>
-                                  )}
-
-                    </ul>
-                  )}
+                     <ContextMenu
+                      contextMenu={contextMenu}
+                      clipboard={clipboard}
+                      selectedItems={selectedItems}
+                      onCreateFolder={() => createFolderInFolders(id)}
+                      onPaste={() => pasteClipboardItems(id)}
+                      onOpenFileItems={handleOpenFileItems}
+                      onOpenMetadata={handleOpenMetadata}
+                      setItemToMove={setItemToMove}
+                      setShowMoveModal={setShowMoveModal}
+                      setItemToCopy={setItemToCopy}
+                      setClipboard={setClipboard}
+                      setContextMenu={setContextMenu}
+                      setItemToRename={setItemToRename}
+                      setShowRenameModal={setShowRenameModal}
+                      confirmDelete={confirmDelete}
+                    />
                 </div>
               </div>
             )

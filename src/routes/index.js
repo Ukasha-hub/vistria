@@ -7,6 +7,7 @@ const Rundown = lazy(() => import('../pages/Rundown'));
 const Settings = lazy(() => import('../pages/Settings'));
 const VideoMetadata = lazy(() => import('../pages/VideoMetadata')); 
 const FolderItems = lazy(() => import('../pages/FolderItems')); 
+const Login = lazy(() => import('../pages/Login')); 
 
 
 // ✅ Route configuration
@@ -47,6 +48,12 @@ export const routes = [
     name: 'FolderItems',
     exact: true,
   },
+  {
+    path: '/login', // Add a new route for the login page
+    element: Login,
+    name: 'Login',
+    exact: true,
+  },
   
   // Add more routes here as your app grows
 ];
@@ -59,6 +66,7 @@ export const ROUTES = {
   SETTINGS: '/settings',
   METADATA: '/metadata/:id',
   FOLDERITEMS: '/folderitem/:id',
+  LOGIN: '/login', // 
   
 };
 

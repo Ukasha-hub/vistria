@@ -44,7 +44,9 @@ const FolderCard = ({ item, onRightClick, onSelect, isSelected, onDrop }) => {
         onDoubleClick={handleDoubleClick} // double click to go inside
         className="max-w-[190px] max-h-[250px]  rounded-md shadow-sm border relative cursor-pointer"
       >
-        <img src={item.image} alt="" className="w-full h-[80px] object-cover rounded-t-md" />
+        <div className="flex items-center justify-center w-full h-36 bg-gray-50 rounded-t-md">
+        <img src={item.image} alt="" className="w-30 h-full object-cover rounded-t-md" />
+        </div>
         <div className="flex flex-col justify-between p-6 space-y-8">
           <div className="space-y-2">
             <p className="text-sm dark:text-gray-800">{item.title}</p>

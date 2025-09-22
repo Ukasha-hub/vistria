@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-
+import { FaStepBackward } from "react-icons/fa";
+import { FaForwardStep } from "react-icons/fa6";
 
 const PaginationComponent = ({ currentPage, totalPages, onPageChange, handleSort, sortBy, sortOrder ,handleItemsPerPageChange, itemsPerPage }) => {
 
@@ -22,7 +23,7 @@ const PaginationComponent = ({ currentPage, totalPages, onPageChange, handleSort
                     disabled={currentPage === 1}
                     className="join-item btn btn-xs lg:btn-lg"
                 >
-                    «
+                   <FaStepBackward />
                 </button>
 
                 {/* Current Page Number */}
@@ -36,16 +37,16 @@ const PaginationComponent = ({ currentPage, totalPages, onPageChange, handleSort
                     disabled={currentPage === totalPages}
                     className="join-item btn btn-xs lg:btn-lg"
                 >
-                    »
+                    <FaForwardStep />
                 </button>
         </div>
           
           <div className="">
             <ul
                 tabIndex={0}
-                className=" bg-base-100 rounded-box z-1 w-20 p-2 shadow-sm"
+                className=" bg-base-100 rounded-box z-1 w-20 p-2 "
                 >
-                <li><button className='bg-gray-200' onClick={() => handleSort("name")}>Name {sortBy === "name" ? (sortOrder === "asc" ? "↑" : "↓") : ""}</button></li>
+                <li><button className='btn btn-xs bg-gray-300' onClick={() => handleSort("name")}>Name {sortBy === "name" ? (sortOrder === "asc" ? "↑" : "↓") : ""}</button></li>
                 {/* Add more sort options here */}
             </ul>
           </div >
@@ -55,7 +56,7 @@ const PaginationComponent = ({ currentPage, totalPages, onPageChange, handleSort
               <div className="form-group">
               
                 <select
-                  className="form-control w-40 h-8 text-sm border rounded-md px-2"
+                  className="form-control w-30 lg:w-40 h-8 text-sm border rounded-md px-2"
                   value={itemsPerPage}
                   onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
                 >

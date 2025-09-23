@@ -55,21 +55,34 @@ const useFileFolderManager = () =>{
         if (storedClipboard) setClipboard(storedClipboard);
       }, []);
 
-    
+     // Compute filtered items based on active tab
+const filteredItems = useMemo(() => {
+  if (activeTab === "videos") {
+    return cards.filter(item => item.folderORfile === "file");
+  } else if (activeTab === "category") {
+    return cards.filter(item =>
+      item.folderORfile === "file" &&
+      (item.category === "Dubbed serial" || item.category === "cartoon")
+    );
+  }
+  // default: all top-level items
+  return cards.filter(item => !item.parent);
+}, [cards, activeTab]);
     
 
     const [sortBy, setSortBy] = useState("name"); // default sort
 const [sortOrder, setSortOrder] = useState("asc"); // ascending or descending
 
-const sortedItems = [...topLevelItems].sort((a, b) => {
-  if (sortBy === "name") {
-    const nameA = a.title.toLowerCase();
-    const nameB = b.title.toLowerCase();
-    return sortOrder === "asc" ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
-  }
-  // Add more sorting options here
-  return 0;
-});
+const sortedFilteredItems = useMemo(() => {
+  return [...filteredItems].sort((a, b) => {
+    if (sortBy === "name") {
+      const nameA = a.title.toLowerCase();
+      const nameB = b.title.toLowerCase();
+      return sortOrder === "asc" ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+    }
+    return 0;
+  });
+}, [filteredItems, sortBy, sortOrder]);
 
 const handleSort = (criteria) => {
   if (sortBy === criteria) {
@@ -88,11 +101,14 @@ const handleSort = (criteria) => {
  const [currentPage, setCurrentPage] = useState(1);
         
  const [itemsPerPage, setItemsPerPage] = useState(15);
- const totalPages = Math.ceil(sortedItems .length / itemsPerPage); // Calculate total pages
+
+
+
+ const totalPages = Math.ceil(sortedFilteredItems.length / itemsPerPage);; // Calculate total pages
    // Calculate start and end indices for current page
    const startIndex = (currentPage - 1) * itemsPerPage;
    const endIndex = startIndex + itemsPerPage;
- const currentItems = sortedItems.slice(startIndex, endIndex);
+ const currentItems = sortedFilteredItems.slice(startIndex, endIndex);
  const paginatedTopLevelItems = topLevelItems.slice(startIndex, endIndex);
 
  // Change page function

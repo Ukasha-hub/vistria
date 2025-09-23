@@ -134,7 +134,7 @@ const handleFileChange = (event) => {
                   files.map((file, index) => (
                     <div key={index} className="flex items-center justify-between p-2 border rounded-md bg-white">
                       <span className="text-sm w-32 truncate">{file.name}</span>
-                      <span>({(file.size / 1024).toFixed(2)} KB)</span>
+                      <span>({(file.size / (1024 ** 3)).toFixed(2)} GB)</span>
                       <span>{uploading ? 'Uploading...' : uploadSuccess ? 'Success' : uploadError ? 'Error' : 'Idle'}</span>
                       <button
                         onClick={() => removeFile(index)}
@@ -162,7 +162,7 @@ const handleFileChange = (event) => {
               </label>
             </div>
             <div className="flex gap-2">
-              <div>Total Size: {(totalSize / 1024).toFixed(2)} KB</div>
+              <div>Total Size: {(totalSize / (1024 ** 3)).toFixed(2)} GB</div>
             </div>
             <div className="flex gap-2">
               <div className="">Status: {uploading ? 'Uploading...' : uploadSuccess ? 'Success' : uploadError ? 'Error' : 'Idle'}</div>

@@ -166,14 +166,14 @@ const FolderItems = () => {
                     location={location}
                     pathnames={pathnames}
                     navigate={navigate}
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    setCurrentPage={setCurrentPage}
-                    handleSort={handleSort}
-                    sortBy={sortBy}
-                    sortOrder={sortOrder}
-                    handleItemsPerPageChange={handleItemsPerPageChange}
-                    itemsPerPage={itemsPerPage}
+                    currentPage={currentPageinFiles}
+                    totalPages={totalPagesinFiles}
+                    setCurrentPage={setCurrentPageinFiles}
+                    sortBy={sortByinFiles}
+                    sortOrder={sortOrderinFiles}
+                    handleSort={handleSortinFiles}
+                    handleItemsPerPageChange={handleItemsPerPageChangeinFiles}
+                    itemsPerPage={itemsPerPageinFiles}
                     handleSelectAll={handleSelectAll}
                     onOpenAddFileModal={() => setShowAddFileModal(true)}
                    onCloseAddFileModal={() => setShowAddFileModal(false)}
@@ -226,6 +226,25 @@ const FolderItems = () => {
 
               {activeTab === "videos" && (
                 <div className="tab-pane fade show active p-4">
+                   <TopbarInsideTabs
+                     location={location}
+                     pathnames={pathnames}
+                     navigate={navigate}
+                     currentPage={currentPageinFiles}
+                     totalPages={totalPagesinFiles}
+                     setCurrentPage={setCurrentPageinFiles}
+                     sortBy={sortByinFiles}
+                     sortOrder={sortOrderinFiles}
+                     handleSort={handleSortinFiles}
+                     handleItemsPerPageChange={handleItemsPerPageChangeinFiles}
+                     itemsPerPage={itemsPerPageinFiles}
+                     handleSelectAll={handleSelectAll}
+                     onOpenAddFileModal={() => setShowAddFileModal(true)}
+                    onCloseAddFileModal={() => setShowAddFileModal(false)}
+                  />
+                  {showAddFileModal && (
+                  <AddFileModal onClose={() => setShowAddFileModal(false)} />
+                )}
                   <div
                     className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 p-10"
                     >
@@ -263,6 +282,25 @@ const FolderItems = () => {
               )}
               {activeTab === "category" && (
               <div className="tab-pane fade show active p-4">
+                 <TopbarInsideTabs
+                    location={location}
+                    pathnames={pathnames}
+                    navigate={navigate}
+                    currentPage={currentPageinFiles}
+                    totalPages={totalPagesinFiles}
+                    setCurrentPage={setCurrentPageinFiles}
+                    sortBy={sortByinFiles}
+                    sortOrder={sortOrderinFiles}
+                    handleSort={handleSortinFiles}
+                    handleItemsPerPageChange={handleItemsPerPageChangeinFiles}
+                    itemsPerPage={itemsPerPageinFiles}
+                    handleSelectAll={handleSelectAll}
+                    onOpenAddFileModal={() => setShowAddFileModal(true)}
+                   onCloseAddFileModal={() => setShowAddFileModal(false)}
+                  />
+                  {showAddFileModal && (
+                  <AddFileModal onClose={() => setShowAddFileModal(false)} />
+                )}
                 <div className=" gap-4 p-10"
                 
                 >

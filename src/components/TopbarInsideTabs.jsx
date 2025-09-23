@@ -7,7 +7,7 @@ import AddFileModal from './Modal/AddFileModal';
 import { FaArrowLeft } from "react-icons/fa";
 import { IoReturnUpBackOutline } from "react-icons/io5";
 
-const TopbarInsideTabs = ({location, pathnames, currentPage ,totalPages, setCurrentPage,handleSort, sortBy ,sortOrder, handleItemsPerPageChange ,itemsPerPage, handleSelectAll, onOpenAddFileModal, showAddFileModal, onCloseAddFileModal}) => {
+const TopbarInsideTabs = ({location, pathnames, currentPage ,totalPages, setCurrentPage,handleSort, sortBy ,sortOrder, handleItemsPerPageChange ,itemsPerPage, handleSelectAll, onOpenAddFileModal,  }) => {
     const {cards, setCards
         } = useFileFolderManager();
 
@@ -15,7 +15,7 @@ const TopbarInsideTabs = ({location, pathnames, currentPage ,totalPages, setCurr
     
  
   return (
-    <div>
+    <div className='border-b-2'>
       
         {/*breadcrump */}
         <div className='flex flex-col lg:flex-row lg:justify-between'>

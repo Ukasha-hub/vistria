@@ -23,12 +23,12 @@ function Home() {
   const {createFolderInHomepage, handleDrop,handleRenameHomePage,itemToRename, setItemToRename, showRenameModal, setShowRenameModal, handleSelectAll, pasteClipboardItems, clipboard, setClipboard, itemsPerPage,handleItemsPerPageChange ,handleSort,sortBy, sortOrder,currentPage, setCurrentPage, totalPages,currentItems,  contextMenu, setContextMenu, showMoveModal, setShowMoveModal, showCopyModal, setShowCopyModal, 
     itemToCopy, setItemToCopy, itemToMove, setItemToMove, selectedItems, setSelectedItems, showDeleteModal, setShowDeleteModal, 
     itemToDelete, setItemToDelete, cards, setCards,  topLevelItems, handleSelectItem, navigate, handleRightClick, handleOpenMetadata,
-    handleOpenFileItems, folders,  confirmDelete, handleDelete, handleMove, cancelDelete, handleCopy} = useFileFolderManager();
+    handleOpenFileItems, folders, activeTab, setActiveTab,  confirmDelete, handleDelete, handleMove, cancelDelete, handleCopy} = useFileFolderManager();
 
     const location = useLocation();
     const pathnames = location.pathname.split('/').filter(x => x);
 
-    const [activeTab, setActiveTab] = useState("folder-content");
+    
 
     const [showAddFileModal, setShowAddFileModal] = useState(false);
 
@@ -121,11 +121,31 @@ function Home() {
 
             {activeTab === "videos" && (
               <div className="tab-pane fade show active p-4">
+                <TopbarInsideTabs
+                  location={location}
+                  pathnames={pathnames}
+                  navigate={navigate}
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  setCurrentPage={setCurrentPage}
+                  handleSort={handleSort}
+                  sortBy={sortBy}
+                  sortOrder={sortOrder}
+                  handleItemsPerPageChange={handleItemsPerPageChange}
+                  itemsPerPage={itemsPerPage}
+                  handleSelectAll={handleSelectAll}
+                  showAddFileModal={showAddFileModal}
+                  onOpenAddFileModal={() => setShowAddFileModal(true)}
+                  onCloseAddFileModal={() => setShowAddFileModal(false)}
+                />
+                {showAddFileModal && (
+                  <AddFileModal onClose={() => setShowAddFileModal(false)} />
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 p-10"
                 
                 >
                   
-                  {topLevelItems
+                  {currentItems
                     .filter((item) => item.folderORfile === "file")
                     .map((item) => (
                       <FolderCard
@@ -160,6 +180,26 @@ function Home() {
             )}
             {activeTab === "category" && (
               <div className="tab-pane fade show active p-4">
+                <TopbarInsideTabs
+                  location={location}
+                  pathnames={pathnames}
+                  navigate={navigate}
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  setCurrentPage={setCurrentPage}
+                  handleSort={handleSort}
+                  sortBy={sortBy}
+                  sortOrder={sortOrder}
+                  handleItemsPerPageChange={handleItemsPerPageChange}
+                  itemsPerPage={itemsPerPage}
+                  handleSelectAll={handleSelectAll}
+                  showAddFileModal={showAddFileModal}
+                  onOpenAddFileModal={() => setShowAddFileModal(true)}
+                  onCloseAddFileModal={() => setShowAddFileModal(false)}
+                />
+                {showAddFileModal && (
+                  <AddFileModal onClose={() => setShowAddFileModal(false)} />
+                )}
                 <div className=" gap-4 p-10"
                 
                 >
@@ -167,10 +207,10 @@ function Home() {
                       <div className='flex flex-col gap-3'>
                         <div className='text-2xl font-bold'><h1>dubbed seial</h1></div> 
                         <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-2'>
-                        {topLevelItems.filter(item =>
+                        {currentItems.filter(item =>
                               item.folderORfile === "file" && item.category === "Dubbed serial"
                             ).length > 0 ? (
-                              topLevelItems
+                              currentItems
                                 .filter(item => item.folderORfile === "file" && item.category === "Dubbed serial")
                                 .map(item => (
                                   <FolderCard
@@ -189,10 +229,10 @@ function Home() {
                       <div className='flex flex-col mt-3'>
                           <div className='text-2xl font-bold'><h1>Cartoon</h1></div> 
                           <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-2'>
-                            {topLevelItems.filter(item =>
+                            {currentItems.filter(item =>
                               item.folderORfile === "file" && item.category === "cartoon"
                             ).length > 0 ? (
-                              topLevelItems
+                              currentItems
                                 .filter(item => item.folderORfile === "file" && item.category === "cartoon")
                                 .map(item => (
                                   <FolderCard

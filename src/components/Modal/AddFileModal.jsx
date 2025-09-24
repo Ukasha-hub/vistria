@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from "axios";
 
 const AddFileModal = ({ onClose }) => {
   const [files, setFiles] = useState([]);
@@ -9,6 +10,7 @@ const AddFileModal = ({ onClose }) => {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadError, setUploadError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [fileProgress, setFileProgress] = useState({});
 
  // const handleFileChange = (event) => {
   //  const newFiles = Array.from(event.target.files);
@@ -17,8 +19,12 @@ const AddFileModal = ({ onClose }) => {
 //  };
 
 const handleFileChange = (event) => {
-  event.preventDefault();
-  setFiles([...files, ...Array.from(event.target.files)]); // Append new files
+  const newFiles = Array.from(event.target.files).map(file => ({
+    file,
+    status: "Idle",       // Idle | Uploading | Success | Error
+    progress: 0
+  }));
+  setFiles(prev => [...prev, ...newFiles]);
 };
 
   
@@ -43,46 +49,40 @@ const handleFileChange = (event) => {
     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (files.length === 0) return;
   
-    setUploading(true);
-    setUploadProgress(0);
-    setUploadSuccess(false);
-    setUploadError(false);
-    setErrorMessage('');
+    const updatedFiles = [...files];
   
-    try {
-      // Fake progress bar (fills over 3 seconds)
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += 5;
-        setUploadProgress(progress);
-        if (progress >= 100) {
-          clearInterval(interval);
-          setUploading(false);
-          setUploadSuccess(true);
-        }
-      }, 150);
+    for (let i = 0; i < updatedFiles.length; i++) {
+      const current = updatedFiles[i];
+      updatedFiles[i] = { ...current, status: "Uploading", progress: 0 };
+      setFiles([...updatedFiles]);
   
-      // Simulated backend upload loop (commented until real API)
-      // for (let file of files) {
-      //   const formData = new FormData();
-      //   formData.append('file', file);
-      //   const response = await api.post('/videos/upload', formData, {
-      //     headers: { 'Content-Type': 'multipart/form-data' }
-      //   });
-      //   console.log('Upload successful', response.data);
-      // }
-    } catch (error) {
-      setUploading(false);
-      setUploadError(true);
-      setErrorMessage(error.message || 'Error uploading file');
-      console.error("Error uploading file", error);
+      try {
+        const formData = new FormData();
+        formData.append("file", current.file);
+  
+        await axios.post("http://172.16.9.98:8000/api/v1/upload", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            updatedFiles[i] = { ...current, status: "Uploading", progress };
+            setFiles([...updatedFiles]);
+          },
+        });
+  
+        updatedFiles[i] = { ...current, status: "Success", progress: 100 };
+      } catch (error) {
+        updatedFiles[i] = { ...current, status: "Error", progress: 0 };
+      }
+  
+      setFiles([...updatedFiles]);
     }
   };
 
-  const totalSize = files.reduce((acc, file) => acc + file.size, 0);
+  const totalSize = files.reduce((acc, f) => acc + f.file.size, 0);
+
 
   return (
     <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/40 z-[9999]">
@@ -131,17 +131,32 @@ const handleFileChange = (event) => {
                 {files.length === 0 ? (
                   <p className="text-sm text-gray-500">No files selected.</p>
                 ) : (
-                  files.map((file, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 border rounded-md bg-white">
-                      <span className="text-sm w-32 truncate">{file.name}</span>
-                      <span>({(file.size / (1024 ** 3)).toFixed(2)} GB)</span>
-                      <span>{uploading ? 'Uploading...' : uploadSuccess ? 'Success' : uploadError ? 'Error' : 'Idle'}</span>
-                      <button
-                        onClick={() => removeFile(index)}
-                        className="btn btn-xs btn-circle bg-red-700 text-white"
-                      >
-                        x
-                      </button>
+                  files.map((fileObj, index) => (
+                    <div key={index} className="flex flex-col border rounded-md p-2 bg-white">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm w-32 truncate">{fileObj.file.name}</span>
+                        <span>({(fileObj.file.size / (1024 ** 3)).toFixed(2)} GB)</span>
+                        <span className="ml-2 text-xs">
+                          {fileObj.status}
+                        </span>
+                        <button
+                          onClick={() => removeFile(index)}
+                          className="btn btn-xs btn-circle bg-red-700 text-white"
+                          disabled={fileObj.status === "Uploading"}
+                        >
+                          x
+                        </button>
+                      </div>
+                  
+                      {/* Progress bar */}
+                      {fileObj.status === "Uploading" && (
+                        <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                          <div
+                            className="bg-blue-600 h-2 rounded-full transition-all duration-200"
+                            style={{ width: `${fileObj.progress}%` }}
+                          ></div>
+                        </div>
+                      )}
                     </div>
                   ))
                 )}
@@ -169,15 +184,15 @@ const handleFileChange = (event) => {
             </div>
           </div>
 
-          {/* Fake Loading Bar */}
-          {uploading && (
+          {/* {uploading && (
             <div className="w-full bg-gray-200 rounded-full h-2.5 mt-4">
               <div
                 className="bg-blue-600 h-2.5 rounded-full transition-all duration-150"
                 style={{ width: `${uploadProgress}%` }}
               ></div>
             </div>
-          )}
+          )} */}
+          
 
           {/* Options */}
           <div className="flex flex-row mt-4">
@@ -186,8 +201,8 @@ const handleFileChange = (event) => {
           </div>
 
           <div className="mt-10 flex justify-center">
-            <button className="btn btn-md bg-gray-400" onClick={() => setFiles([])}>
-              Restart Uploading
+            <button className="btn btn-md bg-green-300" onClick={() => setFiles([])}>
+              Restart Upload
             </button>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import LoginForm from "/home/app-two/Desktop/PROJECTS/broadcast-rundown-monitor-master/src/features/auth/components/LoginForm.jsx"
+import LoginForm from "../features/auth/components/LoginForm.jsx"
 
 
 const Login = () => {

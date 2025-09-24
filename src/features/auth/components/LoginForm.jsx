@@ -3,7 +3,7 @@ import React from 'react'
 import { FcGoogle } from "react-icons/fc";
 import { SiGithub } from "react-icons/si";
 import { FaSquareXTwitter } from "react-icons/fa6";
-import logo from '/home/app-two/Desktop/PROJECTS/broadcast-rundown-monitor-master/src/sysnova broadcast logo.png'; 
+
 
 const LoginForm = ({ }) => {
   

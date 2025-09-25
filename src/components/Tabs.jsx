@@ -14,7 +14,7 @@ const Tabs = ({ activeTab, setActiveTab }) => {
               setActiveTab("folder-content");
             }}
           >
-            Folder Content
+            All Content
           </a>
         </li>
 

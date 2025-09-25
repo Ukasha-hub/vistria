@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import cardData from "../services/CardData";
 import { useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
+import axios from "axios";
 
 const useFileFolderManager = () =>{
        
@@ -31,6 +32,28 @@ const useFileFolderManager = () =>{
         const saved = localStorage.getItem('cards');
         return saved ? JSON.parse(saved) : cardData;
       });
+
+
+      const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Replace with your API endpoint
+    const fetchVideos = async () => {
+      try {
+        const response = await axios.get("http://172.16.9.98:8000/api/v1/videos");
+        setVideos(response.data.videos); // assuming response.data has the same structure
+      } catch (err) {
+        console.error("Error fetching videos:", err);
+        setError("Failed to fetch videos");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVideos();
+  }, []);
 
 
      
@@ -546,7 +569,7 @@ const [currentPageinFiles, setCurrentPageinFiles] = useState(1);
         return{createFolderInFolders, createFolderInHomepage, handleDrop,  handleRenameHomePage,itemToRename, setItemToRename, showRenameModal, setShowRenameModal, handleSelectAll, pasteClipboardItems, clipboard, setClipboard, handleItemsPerPageChangeinFiles , changePageinFiles ,paginatedTopLevelItemsinFiles,currentItemsinFiles,totalPagesinFiles,itemsPerPageinFiles, setItemsPerPageinFiles, currentPageinFiles, setCurrentPageinFiles,handleSortinFiles,sortOrderinFiles, setSortOrderinFiles, sortByinFiles, setSortByinFiles,sortedItemsinFiles,items, setItems, itemsPerPage,handleItemsPerPageChange ,handleSort,sortBy, sortOrder,currentPage, setCurrentPage, changePage,totalPages,currentItems,paginatedTopLevelItems , activeTab,  setActiveTab, contextMenu, setContextMenu, showMoveModal, setShowMoveModal, showCopyModal, setShowCopyModal, 
             itemToCopy, setItemToCopy, itemToMove, setItemToMove, selectedItems, setSelectedItems, showDeleteModal, setShowDeleteModal, 
             itemToDelete, setItemToDelete, cards, setCards,  topLevelItems, handleSelectItem, navigate, handleRightClick, handleOpenMetadata,
-            handleOpenFileItems, folders,  confirmDelete, handleDelete, handleMove,handleMoveInFolders, cancelDelete}
+            handleOpenFileItems, folders,  confirmDelete, handleDelete, handleMove,handleMoveInFolders, cancelDelete, videos, setVideos, loading, setLoading, error, setError}
 
 
 }

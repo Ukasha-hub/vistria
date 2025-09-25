@@ -4,12 +4,16 @@ import './App.css';
 
 import MainLayout from './layouts/MainLayout';
 import AppRoutes from './routes/AppRoutes';
+import { SearchProvider } from './context/SearchContext';
 
 function App() {
   return (
-    <MainLayout>
+    <SearchProvider>
+       <MainLayout>
       <AppRoutes />
     </MainLayout>
+    </SearchProvider>
+   
   );
 }
 

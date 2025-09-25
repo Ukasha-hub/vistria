@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import FolderCard from '../../components/FolderCard'
 
 
@@ -18,12 +18,16 @@ import Tabs from '../../components/Tabs';
 import PageHeader from '../../components/PageHeader';
 import AddFileModal from '../../components/Modal/AddFileModal';
 import ContextMenu from '../../components/ContextMenu';
+import axios from 'axios';
+import FileCard from '../../components/FileCard';
+import MainLayout from '../../layouts/MainLayout';
+import { SearchContext } from '../../context/SearchContext';
 
 function Home() {
   const {createFolderInHomepage, handleDrop,handleRenameHomePage,itemToRename, setItemToRename, showRenameModal, setShowRenameModal, handleSelectAll, pasteClipboardItems, clipboard, setClipboard, itemsPerPage,handleItemsPerPageChange ,handleSort,sortBy, sortOrder,currentPage, setCurrentPage, totalPages,currentItems,  contextMenu, setContextMenu, showMoveModal, setShowMoveModal, showCopyModal, setShowCopyModal, 
     itemToCopy, setItemToCopy, itemToMove, setItemToMove, selectedItems, setSelectedItems, showDeleteModal, setShowDeleteModal, 
     itemToDelete, setItemToDelete, cards, setCards,  topLevelItems, handleSelectItem, navigate, handleRightClick, handleOpenMetadata,
-    handleOpenFileItems, folders, activeTab, setActiveTab,  confirmDelete, handleDelete, handleMove, cancelDelete, handleCopy} = useFileFolderManager();
+    handleOpenFileItems, folders, activeTab, setActiveTab,  confirmDelete, handleDelete, handleMove, cancelDelete, handleCopy, } = useFileFolderManager();
 
     const location = useLocation();
     const pathnames = location.pathname.split('/').filter(x => x);
@@ -32,8 +36,48 @@ function Home() {
 
     const [showAddFileModal, setShowAddFileModal] = useState(false);
 
+    const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const { searchResults } = useContext(SearchContext);
+  
+
+  
+  useEffect(() => {
+    // Replace with your API endpoint
+    const fetchVideos = async () => {
+      try {
+        const response = await axios.get("http://172.16.9.98:8000/api/v1/videos");
+        setVideos(response.data.videos); // assuming response.data has the same structure
+      } catch (err) {
+        console.error("Error fetching videos:", err);
+        setError("Failed to fetch videos");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVideos();
+  }, []);
+  
+  useEffect(() => {
+    if (searchResults.length > 0) {
+      setVideos(searchResults);
+    } else {
+      // If search results are empty, re-fetch the initial list or handle it as needed
+      // For now, let's keep the current videos state, so the list doesn't get cleared
+      // unless the user initiates a new search
+    }
+  }, [searchResults]);
+
+   
+
+  if (loading) return <p>Loading videos...</p>;
+  if (error) return <p>{error}</p>;
   return (
-    <div>
+    
+      <div>
      {/* Page Header */}
      <PageHeader></PageHeader>
 
@@ -84,7 +128,18 @@ function Home() {
                     }
                   }}
                 >
-                  {currentItems.map((item) => (
+                  {videos.map((item) => (
+    <div key={item.asset_id} className="border-b-2 border-dotted border-gray-300 pb-4">
+      <FileCard
+        item={item}
+        onRightClick={handleRightClick}
+        onSelect={handleSelectItem}
+        isSelected={selectedItems.some((i) => i.asset_id === item.asset_id)}
+        onDrop={handleDrop}
+      />
+    </div>
+  ))}
+   {/*currentItems.map((item) => (
     <div key={item.id} className="border-b-2 border-dotted border-gray-300 pb-4">
       <FolderCard
         item={item}
@@ -94,7 +149,7 @@ function Home() {
         onDrop={handleDrop}
       />
     </div>
-  ))}
+  ))*/}
 
                   {/* Context Menu */}
                   <ContextMenu
@@ -301,6 +356,8 @@ function Home() {
 
 
     </div>
+   
+    
   );
 }
  

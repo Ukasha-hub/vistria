@@ -1,5 +1,6 @@
 import { lazy } from 'react';
 
+
 // ✅ Lazy load components for better performance
 const Home = lazy(() => import('../pages/Home'));
 const DashboardV2 = lazy(() => import('../pages/DashboardV2'));
@@ -8,6 +9,7 @@ const Settings = lazy(() => import('../pages/Settings'));
 const VideoMetadata = lazy(() => import('../pages/VideoMetadata')); 
 const FolderItems = lazy(() => import('../pages/FolderItems')); 
 const Login = lazy(() => import('../pages/Login')); 
+const AssetVideos = lazy(() => import('../pages/AssetVideos')); 
 
 
 // ✅ Route configuration
@@ -42,6 +44,7 @@ export const routes = [
     name: 'VideoMetadata',
     exact: true,
   },
+  
   {
     path: '/folderitem/:id',
     element: FolderItems,
@@ -52,6 +55,12 @@ export const routes = [
     path: '/login', // Add a new route for the login page
     element: Login,
     name: 'Login',
+    exact: true,
+  },
+  {
+    path: 'api/v1/assets/single',
+    element: AssetVideos,
+    name: 'AssetVideos',
     exact: true,
   },
   

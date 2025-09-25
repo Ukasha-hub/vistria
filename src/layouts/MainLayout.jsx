@@ -3,11 +3,11 @@ import Header from './Header';
 import SideNav from './SideNav';
 import Footer from './Footer';
 
-const MainLayout = ({ children }) => {
+const MainLayout = ({ children, onSearchResults }) => {
   return (
     <div className="wrapper">
-      <Header />
-      <SideNav />
+      <Header onSearchResults={onSearchResults}/>
+     {/*<SideNav /> */} 
       <div className="content-wrapper ">
         {children}
       </div>

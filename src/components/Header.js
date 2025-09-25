@@ -1,11 +1,25 @@
 import React, {  } from "react";
 function Header() {
+
+  const [query, setQuery] = useState("");
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    try {
+      // Example: API with query param ?search=...
+      const res = await axios.get(`http://127.0.0.1:8000/api/videos/?search=${query}`);
+      if (res.data && res.data.videos) {
+        onSearchResults(res.data.videos); // pass results to parent
+      }
+    } catch (err) {
+      console.error("Search failed:", err);
+    }
+  }; 
   return (
     <div>
     
   <nav className="main-header navbar navbar-expand navbar-white navbar-light">
   {/* Left navbar links */}
-  <ul className="navbar-nav">
+  {/* <ul className="navbar-nav">
     <li className="nav-item">
       <a className="nav-link" data-widget="pushmenu" href="#" role="button"><i className="fas fa-bars" /></a>
     </li>
@@ -15,7 +29,8 @@ function Header() {
     <li className="nav-item d-none d-sm-inline-block">
       <a href="#" className="nav-link">Contact</a>
     </li>
-  </ul>
+  </ul>*/}
+  
   {/* Right navbar links */}
   <ul className="navbar-nav ml-auto">
     {/* Navbar Search */}
@@ -40,14 +55,14 @@ function Header() {
       </div>
     </li>
     {/* Messages Dropdown Menu */}
-    <li className="nav-item dropdown">
+     {/* <li className="nav-item dropdown">
       <a className="nav-link" data-toggle="dropdown" href="#">
         <i className="far fa-comments" />
         <span className="badge badge-danger navbar-badge">3</span>
       </a>
       <div className="dropdown-menu dropdown-menu-lg dropdown-menu-right">
         <a href="#" className="dropdown-item">
-          {/* Message Start */}
+    
           <div className="media">
             <img src="dist/img/user1-128x128.jpg" alt="User Avatar" className="img-size-50 mr-3 img-circle" />
             <div className="media-body">
@@ -59,11 +74,11 @@ function Header() {
               <p className="text-sm text-muted"><i className="far fa-clock mr-1" /> 4 Hours Ago</p>
             </div>
           </div>
-          {/* Message End */}
+         
         </a>
         <div className="dropdown-divider" />
         <a href="#" className="dropdown-item">
-          {/* Message Start */}
+       
           <div className="media">
             <img src="dist/img/user8-128x128.jpg" alt="User Avatar" className="img-size-50 img-circle mr-3" />
             <div className="media-body">
@@ -75,11 +90,11 @@ function Header() {
               <p className="text-sm text-muted"><i className="far fa-clock mr-1" /> 4 Hours Ago</p>
             </div>
           </div>
-          {/* Message End */}
+      
         </a>
         <div className="dropdown-divider" />
         <a href="#" className="dropdown-item">
-          {/* Message Start */}
+        
           <div className="media">
             <img src="dist/img/user3-128x128.jpg" alt="User Avatar" className="img-size-50 img-circle mr-3" />
             <div className="media-body">
@@ -91,12 +106,13 @@ function Header() {
               <p className="text-sm text-muted"><i className="far fa-clock mr-1" /> 4 Hours Ago</p>
             </div>
           </div>
-          {/* Message End */}
+         
         </a>
         <div className="dropdown-divider" />
         <a href="#" className="dropdown-item dropdown-footer">See All Messages</a>
       </div>
-    </li>
+    </li> */}
+    
     {/* Notifications Dropdown Menu */}
     <li className="nav-item dropdown">
       <a className="nav-link" data-toggle="dropdown" href="#">

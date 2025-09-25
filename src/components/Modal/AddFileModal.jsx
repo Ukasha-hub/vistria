@@ -45,7 +45,11 @@ const handleFileChange = (event) => {
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
-    const newFiles = Array.from(e.dataTransfer.files);
+    const newFiles = Array.from(e.dataTransfer.files).map(file => ({
+      file,
+      status: "Idle",
+      progress: 0
+    }));
     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
   };
 
@@ -61,10 +65,12 @@ const handleFileChange = (event) => {
   
       try {
         const formData = new FormData();
-        formData.append("file", current.file);
+        for (let [key, value] of formData.entries()) {
+  console.log(key, value);
+}
+        formData.append("files", current.file);
   
         await axios.post("http://172.16.9.98:8000/api/v1/upload", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
           onUploadProgress: (progressEvent) => {
             const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
             updatedFiles[i] = { ...current, status: "Uploading", progress };

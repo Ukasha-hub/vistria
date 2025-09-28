@@ -1,27 +1,41 @@
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { SearchContext } from "../context/SearchContext";
-function Header({ onSearchResults }) {
+function Header({  }) {
 
-  const [query, setQuery] = useState("");
-  const { handleSearchResults } = useContext(SearchContext);
+  
+  const { query, handleQueryChange, handleSearchResults } = useContext(SearchContext);
+
+  const typingTimer = useRef(null);
 
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (!query.trim()) return;
 
+  const performSearch = async (searchText) => {
     try {
-      const res = await axios.get(
-        `http://172.16.9.98:8000/api/v1/videos?search=${encodeURIComponent(query)}`
+      // Fetch all videos from API
+      const res = await axios.get("http://172.16.9.98:8000/api/v1/videos");
+      const videos = res.data.videos || [];
+  
+      // Filter videos by file_name matching the search text (case-insensitive)
+      const filtered = videos.filter(video =>
+        video.file_name.toLowerCase().includes(searchText.toLowerCase())
       );
-      if (res.data && res.data.results) {
-        handleSearchResults(res.data.results);
-      }
+  
+      // Update search results
+      handleSearchResults(filtered);
+      console.log("Filtered results:", filtered);
     } catch (err) {
       console.error("Search failed:", err);
-      handleSearchResults([]); // clear results on error
+      handleSearchResults([]); // Reset on error
     }
+  };
+  
+  const handleKeyUp = (e) => {
+    handleQueryChange(e.target.value); 
+    clearTimeout(typingTimer.current);
+    typingTimer.current = setTimeout(() => {
+      performSearch(query);
+    }, 400);
   };
   return (
     <div>
@@ -50,14 +64,15 @@ function Header({ onSearchResults }) {
               <i className="fas fa-search" />
             </a>
             <div className="navbar-search-block">
-              <form className="form-inline" onSubmit={handleSearch}>
+              <form className="form-inline" >
                 <div className="input-group input-group-sm">
                 <input
           className="form-control form-control-navbar"
           type="search"
           placeholder="Search"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => handleQueryChange(e.target.value)}
+          onKeyUp={handleKeyUp}
         />
                   <div className="input-group-append">
                     <button className="btn btn-navbar" type="submit" >

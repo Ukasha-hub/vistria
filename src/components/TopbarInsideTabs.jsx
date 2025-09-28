@@ -7,7 +7,7 @@ import AddFileModal from './Modal/AddFileModal';
 import { FaArrowLeft } from "react-icons/fa";
 import { IoReturnUpBackOutline } from "react-icons/io5";
 
-const TopbarInsideTabs = ({location, pathnames, currentPage ,totalPages, setCurrentPage,handleSort, sortBy ,sortOrder, handleItemsPerPageChange ,itemsPerPage, handleSelectAll, onOpenAddFileModal,  }) => {
+const TopbarInsideTabs = ({location, pathnames, currentPage ,totalPages, setCurrentPage,handleSort, sortBy ,sortOrder, handleItemsPerPageChange ,itemsPerPage, handleSelectAll, onOpenAddFileModal, items }) => {
     const {cards, setCards
         } = useFileFolderManager();
 
@@ -54,7 +54,7 @@ const TopbarInsideTabs = ({location, pathnames, currentPage ,totalPages, setCurr
                             Add Files
                         </button>
                     </li>
-                    <li><button className='btn btn-xs bg-green-300 p-1' onClick={()=>{handleSelectAll(cards)}}>Select all</button></li>
+                    <li><button className='btn btn-xs bg-green-300 p-1' onClick={()=>{handleSelectAll(items)}}>Select all</button></li>
                         
                     <li>
                         <div className="form-group">

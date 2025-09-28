@@ -24,7 +24,7 @@ import MainLayout from '../../layouts/MainLayout';
 import { SearchContext } from '../../context/SearchContext';
 
 function Home() {
-  const {createFolderInHomepage, handleDrop, pasteClipboardItems, clipboard, setClipboard,   contextMenu, setContextMenu, showMoveModal, setShowMoveModal, 
+  const {createFolderInHomepage, handleDrop,  clipboard, setClipboard,   contextMenu, setContextMenu, showMoveModal, setShowMoveModal, 
      itemToMove, setItemToMove,  
      cards, setCards,  topLevelItems, navigate, handleOpenMetadata,
     handleOpenFileItems, folders, activeTab, setActiveTab,   handleMove,  handleCopy, } = useFileFolderManager();
@@ -182,8 +182,10 @@ const changePage = (page) => {
 };
 
 const handleItemsPerPageChange = (count) => {
- setItemsPerPage(count);
- setCurrentPage(1); // Reset to page 1 when changing items per page
+  // Ensure count is between 10 and 30
+  const clampedCount = Math.min(Math.max(count, 10), 30);
+  setItemsPerPage(clampedCount);
+  setCurrentPage(1); // Reset to page 1 when changing items per page
 };
 
 const [showRenameModal, setShowRenameModal] = useState(false);
@@ -250,6 +252,39 @@ const [showRenameModal, setShowRenameModal] = useState(false);
 
       const [showCopyModal, setShowCopyModal] = useState(false);
         const [itemToCopy, setItemToCopy] = useState(null);
+
+
+        // COPY SELECTED ITEMS (Called from ContextMenu -> setItemToCopy)
+const handleCopySelection = () => {
+  if (!selectedItems.length) return;
+  setClipboard(selectedItems);
+  localStorage.setItem("clipboard", JSON.stringify(selectedItems));
+};
+
+
+const pasteClipboardItems = () => {
+  const stored = clipboard || JSON.parse(localStorage.getItem("clipboard"));
+  if (!stored || !stored.length) return;
+
+  const newCopies = stored.map((item) => ({
+    ...item,
+    asset_id: `${item.asset_id}_copy_${Date.now()}`, // unique ID
+    file_name: item.file_name + " (copy)",
+    title: item.title + " (copy)",
+  }));
+
+  setVideos((prev) => [...prev, ...newCopies]);
+
+  // Clear clipboard after pasting
+  setClipboard(null);
+  localStorage.removeItem("clipboard");
+
+  // Deselect all items after copy/paste
+  setSelectedItems([]);
+
+  setContextMenu((prev) => ({ ...prev, visible: false }));
+};
+
   
   
 if (loading) return <p>Loading videos...</p>;
@@ -341,12 +376,12 @@ if (error) return <p>{error}</p>;
   clipboard={clipboard}
   selectedItems={selectedItems}
   onCreateFolder={createFolderInHomepage}
-  onPaste={() => pasteClipboardItems(null)}
+  onPaste={() => pasteClipboardItems()}
   onOpenFileItems={handleOpenFileItems}
   onOpenMetadata={handleOpenMetadata}
   setItemToMove={setItemToMove}
   setShowMoveModal={setShowMoveModal}
-  setItemToCopy={setItemToCopy}
+  setItemToCopy={() => handleCopySelection()}
   setClipboard={setClipboard}
   setContextMenu={setContextMenu}
   setItemToRename={setItemToRename}

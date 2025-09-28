@@ -60,7 +60,7 @@ const PaginationComponent = ({ currentPage, totalPages, onPageChange, handleSort
                   value={itemsPerPage}
                   onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
                 >
-                  {[5, 10, 15].map((count) => (
+                  {[10, 20, 30].map((count) => (
                     <option key={count} value={count}>
                       {count} per page
                     </option>

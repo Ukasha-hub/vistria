@@ -6,7 +6,7 @@ import MoveFileFolderModal from '../../components/Modal/MoveFileFolderModal'
 
 import DeleteFileFolderModal from '../../components/Modal/DeleteFileFolderModal'
 import useFileFolderManager from '../../hooks/useFileFolderManager'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 
 
@@ -24,7 +24,7 @@ import MainLayout from '../../layouts/MainLayout';
 import { SearchContext } from '../../context/SearchContext';
 
 function Home() {
-  const {createFolderInHomepage, handleDrop,  clipboard, setClipboard,   contextMenu, setContextMenu, showMoveModal, setShowMoveModal, 
+  const { handleDrop,  clipboard, setClipboard,   contextMenu, setContextMenu, showMoveModal, setShowMoveModal, 
      itemToMove, setItemToMove,  
      cards, setCards,  topLevelItems, navigate, handleOpenMetadata,
     handleOpenFileItems, folders, activeTab, setActiveTab,   handleMove,  handleCopy, } = useFileFolderManager();
@@ -163,7 +163,7 @@ const sortedItems = useMemo(() => {
 
 const [currentPage, setCurrentPage] = useState(1);
         
-const [itemsPerPage, setItemsPerPage] = useState(15);
+const [itemsPerPage, setItemsPerPage] = useState(30);
 
 
 
@@ -255,35 +255,91 @@ const [showRenameModal, setShowRenameModal] = useState(false);
 
 
         // COPY SELECTED ITEMS (Called from ContextMenu -> setItemToCopy)
+// COPY SELECTED ITEMS (Temporary - no backend interaction)
 const handleCopySelection = () => {
   if (!selectedItems.length) return;
-  setClipboard(selectedItems);
-  localStorage.setItem("clipboard", JSON.stringify(selectedItems));
+
+  // Deep clone to ensure no reactive/proxy objects
+  const cleanCopy = selectedItems.map(item => structuredClone(item)); 
+
+  setClipboard(cleanCopy);
+  // localStorage.setItem("clipboard", JSON.stringify(cleanCopy)); 
 };
 
 
 const pasteClipboardItems = () => {
-  const stored = clipboard || JSON.parse(localStorage.getItem("clipboard"));
-  if (!stored || !stored.length) return;
+  if (!clipboard || !clipboard.length) return;
 
-  const newCopies = stored.map((item) => ({
+  const newCopies = clipboard.map(item => ({
     ...item,
-    asset_id: `${item.asset_id}_copy_${Date.now()}`, // unique ID
+    asset_id: `${item.asset_id}`, // temporary unique ID
     file_name: item.file_name + " (copy)",
     title: item.title + " (copy)",
   }));
 
-  setVideos((prev) => [...prev, ...newCopies]);
+  setVideos(prev => [...prev, ...newCopies]);
 
-  // Clear clipboard after pasting
-  setClipboard(null);
-  localStorage.removeItem("clipboard");
+  // ✅ Clear clipboard from memory AND localStorage
+  setClipboard([]);
+  localStorage.removeItem("clipboard"); // <-- this line ensures nothing is restored on refresh
 
-  // Deselect all items after copy/paste
+  // ✅ Also clear selected items after pasting
   setSelectedItems([]);
 
-  setContextMenu((prev) => ({ ...prev, visible: false }));
+  // ✅ Close context menu
+  setContextMenu(prev => ({ ...prev, visible: false }));   
 };
+
+const createFolderInHomepage = async () => {
+  const id = Date.now(); // numeric id used by FolderItems
+  const newFolder = {
+    id, // numeric id (FolderItems does parseInt)
+    asset_id: `folder_${id}`, // optional string id for other logic
+    title: `New Folder ${String(id).slice(-4)}`,
+    file_name: `New Folder ${String(id).slice(-4)}`,
+    folderORfile: "folder",
+    thumbnail_url: "https://www.iconpacks.net/icons/2/free-folder-icon-1485-thumb.png",
+    duration: 0,
+    category: null,
+    folderItems: [], // child item ids
+  };
+
+  // show immediately in the UI list of "videos/folders"
+  setVideos(prev => [newFolder, ...prev]);
+
+  // Persist to the same store FolderItems reads (cards)
+  const cards = JSON.parse(localStorage.getItem("cards")) || [];
+  cards.push(newFolder);
+  localStorage.setItem("cards", JSON.stringify(cards));
+
+  // Close context menu and navigate into the new folder
+  setContextMenu(prev => ({ ...prev, visible: false }));
+  
+};
+
+const FolderCard = ({ item, onRightClick, onSelect, isSelected, onDrop }) => {
+  const navigate = useNavigate();
+
+  const handleDoubleClick = () => {
+    const isFolder =
+      item.folderORfile === "folder" ||
+      Array.isArray(item.folderItems) ||
+      (item.asset_id && String(item.asset_id).startsWith("folder_")) ||
+      (typeof item.id === "number");
+  
+    if (isFolder) {
+      // Prefer numeric id param if available (FolderItems expects numeric id)
+      const folderParam = item.id ?? item.asset_id;
+      navigate(`/folderitem/${folderParam}`);
+    } else {
+      navigate(`/api/v1/assets/single?asset_id=${item.asset_id}`);
+    }
+  };
+  return (
+    <div onDoubleClick={handleDoubleClick}>...</div>
+  );
+};
+
 
   
   

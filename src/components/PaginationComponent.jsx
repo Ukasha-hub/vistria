@@ -1,8 +1,18 @@
 import React, { useState } from 'react'
 import { FaStepBackward } from "react-icons/fa";
 import { FaForwardStep } from "react-icons/fa6";
+import { FaLongArrowAltUp } from "react-icons/fa";
+import { FaLongArrowAltDown } from "react-icons/fa";
 
 const PaginationComponent = ({ currentPage, totalPages, onPageChange, handleSort, sortBy, sortOrder ,handleItemsPerPageChange, itemsPerPage }) => {
+
+  const sortIcon = sortBy === "name"
+  ? (sortOrder === "asc" 
+      ? <FaLongArrowAltUp className="text-green-300 inline-block w-3 h-3" /> 
+      : <FaLongArrowAltDown className="text-green-300 inline-block w-3 h-3" />
+    )
+  : null;
+
 
   return (
     <div>
@@ -46,7 +56,11 @@ const PaginationComponent = ({ currentPage, totalPages, onPageChange, handleSort
                 tabIndex={0}
                 className=" bg-base-100 rounded-box z-1 w-20 p-2 "
                 >
-                <li><button className='btn btn-xs bg-gray-300' onClick={() => handleSort("name")}>Name {sortBy === "name" ? (sortOrder === "asc" ? "↑" : "↓") : ""}</button></li>
+                  
+                <li> <button className="btn btn-xs bg-gray-300  flex items-center gap-1" onClick={() => handleSort("name")}>
+    <span>Name</span> {sortIcon}
+  </button></li>
+
                 {/* Add more sort options here */}
             </ul>
           </div >

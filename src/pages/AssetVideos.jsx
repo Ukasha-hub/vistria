@@ -9,6 +9,7 @@ const AssetVideos = () => {
   const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get('asset_id');
@@ -74,13 +75,39 @@ const AssetVideos = () => {
   ></iframe>
 
   {/* ✅ Download button */}
-  <a
+  <div className="relative inline-block mt-3">
+    {/* Dropdown Button */}
+    <button
+      onClick={() => setIsOpen(prev => !prev)}
+      className="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 flex items-center gap-2"
+    >
+      ⬇ Download
+      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+      </svg>
+    </button>
+
+    {/* Dropdown Menu */}
+    {isOpen && (
+      <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-50">
+        <a
+      href={`http://172.16.9.98:8000/api/v1/download/original/${id}`}
+      download={video.file_name}
+      className="block px-4 py-2 text-sm hover:bg-gray-100"
+    >
+      Original Quality
+    </a>
+
+    <a
       href={`http://172.16.9.98:8000/api/v1/download/lowres/${id}`}
-    download={video.file_name}
-    className="mt-3 inline-block px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition"
-  >
-    ⬇ Download Video
-  </a>
+      download={video.file_name}
+      className="block px-4 py-2 text-sm hover:bg-gray-100"
+    >
+      Low Quality
+    </a>
+      </div>
+    )}
+  </div>
 </div>
 
         <div className="flex flex-col gap-2 text-xs">

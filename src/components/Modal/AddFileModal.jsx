@@ -55,6 +55,7 @@ const handleFileChange = (event) => {
 
   const handleUpload = async () => {
     if (files.length === 0) return;
+    setUploading(true);
   
     const updatedFiles = [...files];
   
@@ -92,7 +93,7 @@ const handleFileChange = (event) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/40 z-[9999]">
-      <div className="relative bg-white p-6 rounded-lg shadow-xl w-[70%] max-w-4xl">
+      <div className="relative bg-white p-6 rounded-lg shadow-xl w-[70%] max-w-4xl max-h-[90vh]  overflow-y-auto">
         
         {/* Heading */}
         <div className="flex font-bold text-sm lg:text-lg flex-row justify-between mb-4">
@@ -143,7 +144,7 @@ const handleFileChange = (event) => {
                         <span className="text-sm w-32 truncate">{fileObj.file.name}</span>
                         <span>({(fileObj.file.size / (1024 ** 3)).toFixed(2)} GB)</span>
                         <span className="ml-2 text-xs">
-                          {fileObj.status}
+                          {fileObj.status} <span>{fileObj.progress}%</span>
                         </span>
                         <button
                           onClick={() => removeFile(index)}
@@ -174,20 +175,12 @@ const handleFileChange = (event) => {
           <div className="flex flex-col lg:flex-row justify-between mt-4">
             <div className="flex gap-2">
               <label htmlFor="fileInput" className="btn btn-sm rounded-2 bg-gray-300">Select Files</label>
-              <label
-                className="btn btn-sm bg-gray-300 rounded-2"
-                onClick={handleUpload}
-                disabled={files.length === 0 || uploading}
-              >
-                Start Upload
-              </label>
+              
             </div>
             <div className="flex gap-2">
               <div>Total Size: {(totalSize / (1024 ** 3)).toFixed(2)} GB</div>
             </div>
-            <div className="flex gap-2">
-              <div className="">Status: {uploading ? 'Uploading...' : uploadSuccess ? 'Success' : uploadError ? 'Error' : 'Idle'}</div>
-            </div>
+            
           </div>
 
           {/* {uploading && (
@@ -207,9 +200,13 @@ const handleFileChange = (event) => {
           </div>
 
           <div className="mt-10 flex justify-center">
-            <button className="btn btn-md bg-green-300" onClick={() => setFiles([])}>
-              Restart Upload
-            </button>
+          <label
+                className="btn btn-sm bg-gray-300 rounded-2"
+                onClick={handleUpload}
+                disabled={files.length === 0 || uploading}
+              >
+                Start Upload
+              </label>
           </div>
         </div>
       </div>

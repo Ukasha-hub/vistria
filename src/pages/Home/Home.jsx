@@ -22,6 +22,7 @@ import axios from 'axios';
 import FileCard from '../../components/FileCard';
 import MainLayout from '../../layouts/MainLayout';
 import { SearchContext } from '../../context/SearchContext';
+import API from '../../API';
 
 function Home() {
   const { handleDrop,  clipboard, setClipboard,   contextMenu, setContextMenu, showMoveModal, setShowMoveModal, 
@@ -51,7 +52,7 @@ function Home() {
     // Replace with your API endpoint
     const fetchVideos = async () => {
       try {
-        const response = await axios.get("http://172.16.9.98:8000/api/v1/videos");
+        const response = await API.get("/api/v1/videos");
         setVideos(response.data.videos || []); // assuming response.data has the same structure
       } catch (err) {
         console.error("Error fetching videos:", err);

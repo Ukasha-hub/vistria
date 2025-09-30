@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from "axios";
+import API from '../../API';
 
 const AddFileModal = ({ onClose }) => {
   const [files, setFiles] = useState([]);
@@ -71,7 +72,7 @@ const handleFileChange = (event) => {
 }
         formData.append("files", current.file);
   
-        await axios.post("http://172.16.9.98:8000/api/v1/upload", formData, {
+        await API.post("/api/v1/upload", formData, {
           onUploadProgress: (progressEvent) => {
             const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
             updatedFiles[i] = { ...current, status: "Uploading", progress };

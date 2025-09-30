@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import API from '../API';
 
 const AssetVideos = () => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ const AssetVideos = () => {
   useEffect(() => {
     const fetchVideo = async () => {
       try {
-        const response = await axios.get(`http://172.16.9.98:8000/api/v1/assets/single?asset_id=${id}`);
+        const response = await API.get(`/api/v1/assets/single?asset_id=${id}`);
         setVideo(response.data); // assuming API returns the object directly
       } catch (err) {
         console.error('Error fetching video:', err);
@@ -91,7 +92,7 @@ const AssetVideos = () => {
     {isOpen && (
       <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-50">
         <a
-      href={`http://172.16.9.98:8000/api/v1/download/original/${id}`}
+      href={`${API.defaults.baseURL}/api/v1/download/original/${id}`}
       download={video.file_name}
       className="block px-4 py-2 text-sm hover:bg-gray-100"
     >
@@ -99,7 +100,7 @@ const AssetVideos = () => {
     </a>
 
     <a
-      href={`http://172.16.9.98:8000/api/v1/download/lowres/${id}`}
+      href={`${API.defaults.baseURL}/api/v1/download/lowres/${id}`}
       download={video.file_name}
       className="block px-4 py-2 text-sm hover:bg-gray-100"
     >
